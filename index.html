@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet"> -->
+    <script src="jquery.min.js"></script>
+</head>
+
+<body>
+    <div style="padding: 15px;">
+        <h1>TOOL - IOT</h1>
+        <br>
+        <label for="birthday">Chọn tháng năm:</label>
+        <input type="month" id="month" name="month">
+        <br><br>
+        <button type="button" onclick="getQuery()">Get query</button>
+        <br><br>
+        <div class="query" style="height: auto; width: 100%; border: 1.5px solid; padding: 20px; font-size: 20px;">
+
+        </div>
+    </div>
+    <script>
+        function getQuery(){
+            var month = $('#month').val();
+            var y = new Date(`${month}-1`).getFullYear();
+            var m = new Date(`${month}-1`).getMonth() + 1;
+            let day = new Date(y, m, 0).getDate();
+            var index = '';
+            let count = 0;
+            var listIndex = [];
+            let key = 0;
+            for (let i = 1; i < 29; i++) {
+                count ++;
+                if (count == 1) {
+                    if (i.toString().length == 1) i = `0${i}`;
+                    if (m.toString().length == 1) index = `"chosa-log-${y}.0${m}.${i}"`;
+                    else index = `"chosa-log-${y}.${m}.${i}"`;
+                } else {
+                    if (i.toString().length == 1) i = `0${i}`;
+                    if(m.toString().length == 1) index = `${index}, "chosa-log-${y}.0${m}.${i}"`;
+                    else index = `${index}, "chosa-log-${y}.${m}.${i}"`;
+                }
+                if (count == 4) {
+                    listIndex[key] = index;
+                    key++;
+                    count = 0;
+                }
+            }
+            if(day > 28){
+                var index2 = '';
+                for (let i = 29; i < day+1; i++) {
+                    if (i == 29) {
+                        if (m.toString().length == 1) index2 = `"chosa-log-${y}.0${m}.${i}"`;
+                        else index2 = `"chosa-log-${y}.${m}.${i}"`;
+                    } else {
+                        if (m.toString().length == 1) index2 = `${index2}, "chosa-log-${y}.0${m}.${i}"`;
+                        else index2 = `"chosa-log-${y}.${m}.${i}"`;
+                    }
+                    listIndex[7] = index2;
+                } 
+            }
+            var query = '';
+            listIndex.forEach(e => {
+                query = `${query}
+                    POST /_reindex <br>
+                    { <br>
+                        "source": {
+                            "index": [
+                                ${e}
+                            ]
+                        }, <br>
+                        "dest": {
+                            "index": "chosa-log-${y}.${m}"
+                        } <br>
+                    }
+                <br><br>`;
+            });
+            $('.query').html(query);
+        }
+    </script>
+</body>
+
+</html>
