@@ -32,9 +32,8 @@
             let count = 0;
             var listIndex = [];
             let key = 0;
-            for (let i = 1; i < 29; i++) {
-                count ++;
-                if (count == 1) {
+            for (let i = 1; i < day+1; i++) {
+                if (i == 1) {
                     if (i.toString().length == 1) i = `0${i}`;
                     if (m.toString().length == 1) index = `"chosa-log-${y}.0${m}.${i}"`;
                     else index = `"chosa-log-${y}.${m}.${i}"`;
@@ -43,33 +42,43 @@
                     if(m.toString().length == 1) index = `${index}, "chosa-log-${y}.0${m}.${i}"`;
                     else index = `${index}, "chosa-log-${y}.${m}.${i}"`;
                 }
-                if (count == 4) {
-                    listIndex[key] = index;
-                    key++;
-                    count = 0;
-                }
             }
-            if(day > 28){
-                var index2 = '';
-                for (let i = 29; i < day+1; i++) {
-                    if (i == 29) {
-                        if (m.toString().length == 1) index2 = `"chosa-log-${y}.0${m}.${i}"`;
-                        else index2 = `"chosa-log-${y}.${m}.${i}"`;
-                    } else {
-                        if (m.toString().length == 1) index2 = `${index2}, "chosa-log-${y}.0${m}.${i}"`;
-                        else index2 = `"chosa-log-${y}.${m}.${i}"`;
-                    }
-                    listIndex[7] = index2;
-                } 
-            }
-            var query = '';
-            listIndex.forEach(e => {
-                query = `${query}
+//             for (let i = 1; i < 29; i++) {
+//                 count ++;
+//                 if (count == 1) {
+//                     if (i.toString().length == 1) i = `0${i}`;
+//                     if (m.toString().length == 1) index = `"chosa-log-${y}.0${m}.${i}"`;
+//                     else index = `"chosa-log-${y}.${m}.${i}"`;
+//                 } else {
+//                     if (i.toString().length == 1) i = `0${i}`;
+//                     if(m.toString().length == 1) index = `${index}, "chosa-log-${y}.0${m}.${i}"`;
+//                     else index = `${index}, "chosa-log-${y}.${m}.${i}"`;
+//                 }
+//                 if (count == 4) {
+//                     listIndex[key] = index;
+//                     key++;
+//                     count = 0;
+//                 }
+//             }
+//             if(day > 28){
+//                 var index2 = '';
+//                 for (let i = 29; i < day+1; i++) {
+//                     if (i == 29) {
+//                         if (m.toString().length == 1) index2 = `"chosa-log-${y}.0${m}.${i}"`;
+//                         else index2 = `"chosa-log-${y}.${m}.${i}"`;
+//                     } else {
+//                         if (m.toString().length == 1) index2 = `${index2}, "chosa-log-${y}.0${m}.${i}"`;
+//                         else index2 = `"chosa-log-${y}.${m}.${i}"`;
+//                     }
+//                     listIndex[7] = index2;
+//                 } 
+//             }
+            var query = `
                     POST /_reindex <br>
                     { <br>
                         "source": {
                             "index": [
-                                ${e}
+                                ${index}
                             ]
                         }, <br>
                         "dest": {
@@ -77,7 +86,21 @@
                         } <br>
                     }
                 <br><br>`;
-            });
+//             listIndex.forEach(e => {
+//                 query = `${query}
+//                     POST /_reindex <br>
+//                     { <br>
+//                         "source": {
+//                             "index": [
+//                                 ${e}
+//                             ]
+//                         }, <br>
+//                         "dest": {
+//                             "index": "chosa-log-${y}.${m}"
+//                         } <br>
+//                     }
+//                 <br><br>`;
+//             });
             $('.query').html(query);
         }
     </script>
